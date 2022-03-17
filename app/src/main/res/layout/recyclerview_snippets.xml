@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    android:background="?android:attr/selectableItemBackground" >
+    <TextView
+        android:id="@+id/tvSnippetTitle"
+        android:layout_width="210dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tvSnippetLanguage"
+        android:layout_alignParentStart="true" />
+    <TextView
+        android:id="@+id/tvSnippetLanguage"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/tvSnippetOwner"
+        android:layout_toEndOf="@id/tvSnippetTitle" />
+    <TextView
+        android:id="@+id/tvSnippetOwner"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/tvSnippetLanguage"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
