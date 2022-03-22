@@ -24,11 +24,11 @@ public interface DRFTAPIService {
     @GET("/snippets/{id}")
     Call<Snippet> detailSnippet(@Path("id") int id);
 
-    @PUT("/snippets/{id}")
+    @PUT("/snippets/{id}/")  // The trailing slash necessary in PUT
     Call<Snippet> updateSnippet(@Path("id") int id, @Body Snippet snippet);
 
-    @DELETE("/snippets/{id}")
-    Call<Snippet> deleteSnippet(@Path("id") int id);
+    @DELETE("/snippets/{id}/")  // The trailing slash necessary in DELETE
+    Call<Void> deleteSnippet(@Path("id") int id);
 
     @GET("/snippets/{id}/highlight")
     Call<Snippet> highlightSnippet(@Path("id") int id);

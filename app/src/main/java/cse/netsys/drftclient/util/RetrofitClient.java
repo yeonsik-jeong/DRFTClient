@@ -46,7 +46,7 @@ public class RetrofitClient {
             public Response intercept(@NonNull Chain chain) throws IOException {
                 Request originalRequest = chain.request();
                 Request newRequest = originalRequest.newBuilder()
-                        .header("Authorization", MainActivity.getToken())
+                        .header("Authorization", MainActivity.getToken().get())
                         .build();
                 return chain.proceed(newRequest);
             }

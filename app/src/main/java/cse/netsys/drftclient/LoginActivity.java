@@ -22,7 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +52,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void doLogin(LoginReq loginReq) {
-        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, MainActivity.API_BASE_URL);
+        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
 
         Call<LoginResp> call = apiService.login(loginReq);
         call.enqueue(new Callback<LoginResp>() {
@@ -60,13 +60,12 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResp> call, Response<LoginResp> response) {
                 if(response.isSuccessful()) {
                     LoginResp loginResp = response.body();
-                    Log.i(MainActivity.TAG,loginResp.getMessage() + ": " + loginResp.getUsername() + "'s Token " + loginResp.getToken());
-/* For returning to MainActivity
-                    Intent sIntent = new Intent();
-                    sIntent.putExtra("token", loginResp.getToken());
-                    setResult(RESULT_OK, sIntent);
-*/
-                    MainActivity.setToken(loginResp.getToken());
+                    Log.i(TAG,loginResp.getMessage() + ": " + loginResp.getUsername() + "'s Token " + loginResp.getToken());
+//                    MainActivity.setToken(loginResp.getToken());
+//                    MainActivity.getToken().set(loginResp.getToken());
+//                    MainActivity.setCurrentUsername(loginResp.getUsername());
+                    setCurrentUsername(loginResp.getUsername());
+                    mToken.set(loginResp.getToken());  // Order is important
                     finish();
                 }
             }

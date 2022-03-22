@@ -21,10 +21,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import cse.netsys.drftclient.api.DRFTAPIService;
+import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.model.Snippet;
 import cse.netsys.drftclient.model.Snippets;
 import cse.netsys.drftclient.util.APIClient;
@@ -34,28 +37,18 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
-    public static final String TAG = "DRFTClient";
-    static final String API_BASE_URL = "http://10.0.2.2:8000/";  // Not 127.0.0.1
-    static final Snippet TMP_SNIPPET = new Snippet("Hello World in Android", "public class MainActivity extends AppCompatActivity {}", false, "java", "friendly");
+public class MainActivity extends BaseActivity {
+//    public static final String TAG = "DRFTClient";
+//    static final String API_BASE_URL = "http://10.0.2.2:8000/";  // Not 127.0.0.1
+//    static final Snippet TMP_SNIPPET = new Snippet("Hello World in Android", "public class MainActivity extends AppCompatActivity {}", false, "java", "friendly");
 
-    private static String mToken = null;
-    SnippetAdapter mAdapter;
+//    private static String mToken = null;
+/*
+    private static ObservableToken mToken = new ObservableToken();
+    private static String mCurrentUsername = null;
+*/
 
-    ActivityResultLauncher<Intent> mActivityResultLauncher = registerForActivityResult(
-        new ActivityResultContracts.StartActivityForResult(),
-        new ActivityResultCallback<ActivityResult>() {
-            @Override
-            public void onActivityResult(ActivityResult result) {
-                if(result.getResultCode() == Activity.RESULT_OK) {
-                    Intent rIntent = result.getData();
-                    setToken(rIntent.getStringExtra("token"));
-//                    mApiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL, mToken);
-//                    doCreateSnippet(TMP_SNIPPET);
-                }
-            }
-        }
-    );
+//    SnippetAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,64 +71,43 @@ public class MainActivity extends AppCompatActivity {
         mAdapter.setOnItemClickListener(new SnippetAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int position) {
-                Snippet snippet = mAdapter.getSnippetList().get(position);
+//                Snippet snippet = mAdapter.getSnippetList().get(position);
 //                Toast.makeText(getApplicationContext(), "[ID: " + snippet.getId() + "] " + snippet.getTitle(), Toast.LENGTH_LONG).show();
                 Intent sIntent = new Intent(MainActivity.this, SnippetDetailActivity.class);
-                sIntent.putExtra("Snippet", snippet);
+//                sIntent.putExtra("Snippet", snippet);
+                sIntent.putExtra("position", position);
                 startActivity(sIntent);
             }
         });
 
-        Button btCreate = findViewById(R.id.btCreate);
-        btCreate.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fabCreate = findViewById(R.id.fabCreate);
+        fabCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mToken == null) {
-                    Intent sIntent = new Intent(MainActivity.this, LoginActivity.class);
-                    mActivityResultLauncher.launch(sIntent);
-                } else {
-                    Intent sIntent = new Intent(MainActivity.this, SnippetCreateActivity.class);
-                    startActivity(sIntent);
-                }
+                Intent sIntent = new Intent(MainActivity.this, SnippetCreateActivity.class);
+                startActivity(sIntent);
             }
         });
     }
 
-    public static String getToken() {
+/*    public static ObservableToken getToken() {
         return mToken;
     }
 
-    public static void setToken(String token) {
+*//*    public static void setToken(ObservableToken token) {
         MainActivity.mToken = token;
+    }*//*
+
+    public static String getCurrentUsername() {
+        return mCurrentUsername;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-//        return super.onCreateOptionsMenu(menu);
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_activity_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.menuLogin:
-                Intent sIntent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(sIntent);
-                return true;
-            case R.id.menuLogout:
-//                mApiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
-//                mApiService = null;
-                mToken = null;
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+    public static void setCurrentUsername(String currentUsername) {
+        MainActivity.mCurrentUsername = currentUsername;
+    }*/
 
     public void doListSnippets() {
-        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, MainActivity.API_BASE_URL);
+        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
 
         Call<Snippets> call = apiService.listSnippets();
         call.enqueue(new Callback<Snippets>() {

@@ -3,8 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:title="Login"
         android:id="@+id/menuLogin"
-        android:icon="@mipmap/ic_launcher" />
+        android:icon="@drawable/ic_menu_login"
+        app:showAsAction="ifRoom" />
     <item android:title="Logout"
         android:id="@+id/menuLogout"
-        android:icon="@mipmap/ic_launcher" />
+        android:icon="@drawable/ic_menu_logout"
+        app:showAsAction="ifRoom" />
 </menu>

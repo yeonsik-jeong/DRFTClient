@@ -24,7 +24,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class SignupActivity extends AppCompatActivity {
+public class SignupActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +55,7 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     public void doSignup(SignupReq signupReq) {
-        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, MainActivity.API_BASE_URL);
+        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
 
         Call<SignupResp> call = apiService.signup(signupReq);
         call.enqueue(new Callback<SignupResp>() {
@@ -63,7 +63,7 @@ public class SignupActivity extends AppCompatActivity {
             public void onResponse(Call<SignupResp> call, Response<SignupResp> response) {
                 if(response.isSuccessful()) {
                     SignupResp signupResp = response.body();
-                    Log.i(MainActivity.TAG,signupResp.getMessage() + ": " + signupResp.getUsername());
+                    Log.i(TAG,signupResp.getMessage() + ": " + signupResp.getUsername());
                 }
             }
 

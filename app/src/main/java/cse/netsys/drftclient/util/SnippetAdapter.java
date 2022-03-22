@@ -50,6 +50,7 @@ public class SnippetAdapter extends RecyclerView.Adapter<SnippetAdapter.ViewHold
     public void onBindViewHolder(@NonNull SnippetAdapter.ViewHolder holder, int position) {
         Snippet snippet = snippetList.get(position);
 
+        holder.tvSnippetId.setText(Integer.toString(snippet.getId()));
         holder.tvSnippetTitle.setText(snippet.getTitle());
         holder.tvSnippetLanguage.setText(snippet.getLanguage());
         holder.tvSnippetOwner.setText(snippet.getOwner());
@@ -61,6 +62,7 @@ public class SnippetAdapter extends RecyclerView.Adapter<SnippetAdapter.ViewHold
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvSnippetId;
         TextView tvSnippetTitle;
         TextView tvSnippetLanguage;
         TextView tvSnippetOwner;
@@ -69,6 +71,7 @@ public class SnippetAdapter extends RecyclerView.Adapter<SnippetAdapter.ViewHold
             super(itemView);
             // Define click listener for the ViewHolder's View
 
+            tvSnippetId = itemView.findViewById(R.id.tvSnippetId);
             tvSnippetTitle = itemView.findViewById(R.id.tvSnippetTitle);
             tvSnippetLanguage = itemView.findViewById(R.id.tvSnippetLanguage);
             tvSnippetOwner = itemView.findViewById(R.id.tvSnippetOwner);
