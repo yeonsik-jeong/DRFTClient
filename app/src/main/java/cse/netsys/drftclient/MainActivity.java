@@ -38,17 +38,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends BaseActivity {
-//    public static final String TAG = "DRFTClient";
-//    static final String API_BASE_URL = "http://10.0.2.2:8000/";  // Not 127.0.0.1
-//    static final Snippet TMP_SNIPPET = new Snippet("Hello World in Android", "public class MainActivity extends AppCompatActivity {}", false, "java", "friendly");
-
 //    private static String mToken = null;
-/*
     private static ObservableToken mToken = new ObservableToken();
     private static String mCurrentUsername = null;
-*/
-
-//    SnippetAdapter mAdapter;
+    private static SnippetAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,15 +81,22 @@ public class MainActivity extends BaseActivity {
                 startActivity(sIntent);
             }
         });
+
+        mToken.setOnStringChangeListener(new ObservableToken.OnStringChangeListener() {
+            @Override
+            public void onStringChanged(String newValue) {
+                Log.i(TAG, "MainActivity: onStringChanged() called");
+                Log.i(TAG, "MainActivity: mToken.get(): " + mToken.get() + ", mCurrentUsername: " + mCurrentUsername);
+                invalidateOptionsMenu();
+            }
+        });
+
+//        Log.i(TAG, "MainActivity: mToken: " + mToken);
     }
 
-/*    public static ObservableToken getToken() {
+    public static ObservableToken getToken() {
         return mToken;
     }
-
-*//*    public static void setToken(ObservableToken token) {
-        MainActivity.mToken = token;
-    }*//*
 
     public static String getCurrentUsername() {
         return mCurrentUsername;
@@ -104,7 +104,27 @@ public class MainActivity extends BaseActivity {
 
     public static void setCurrentUsername(String currentUsername) {
         MainActivity.mCurrentUsername = currentUsername;
-    }*/
+    }
+
+    public static SnippetAdapter getAdapter() {
+        return mAdapter;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+//        return super.onPrepareOptionsMenu(menu);
+        Log.i(TAG, this.getClass().getSimpleName() + ": onPrepareOptionsMenu() called");
+        if(mToken.get() == null) {
+            menu.findItem(R.id.menuLogin).setVisible(true);
+            menu.findItem(R.id.menuLogout).setVisible(false);
+        } else {
+            Log.i(TAG, this.getClass().getSimpleName() + ": onPrepareOptionsMenu(): mToken not null");
+            menu.findItem(R.id.menuLogin).setVisible(false);
+            menu.findItem(R.id.menuLogout).setVisible(true);
+        }
+
+        return true;
+    }
 
     public void doListSnippets() {
         DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
@@ -129,5 +149,14 @@ public class MainActivity extends BaseActivity {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void doLogout() {
+        Log.i(TAG, "MainActivity: doLogout()");
+        setCurrentUsername(null);
+        mToken.set(null);
+        SnippetCreateActivity.getToken().set(null);
+        SnippetDetailActivity.getToken().set(null);
     }
 }

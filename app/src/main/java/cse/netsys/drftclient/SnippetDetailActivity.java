@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -13,12 +15,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.model.Snippet;
 import cse.netsys.drftclient.util.APIServiceGenerator;
+import cse.netsys.drftclient.util.SnippetAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,6 +33,8 @@ public class SnippetDetailActivity extends BaseActivity {
 //    private String mToken = null;
 //    private ObservableToken mToken = null;
 //    private String mCurrentUsername = null;
+    private static ObservableToken mToken = new ObservableToken();
+    private SnippetAdapter mAdapter;
 
     private TextView mTvURL;
     private TextView mTvID;
@@ -44,6 +50,8 @@ public class SnippetDetailActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snippetdetail);
+
+        mAdapter = MainActivity.getAdapter();
 
 //        Snippet snippet = getIntent().getParcelableExtra("Snippet");
         int position = getIntent().getIntExtra("position", 0);
@@ -79,10 +87,7 @@ public class SnippetDetailActivity extends BaseActivity {
 //        mToken = MainActivity.getToken();
 //        mCurrentUsername = MainActivity.getCurrentUsername();
 //        Toast.makeText(getApplicationContext(), "mCurrentUsername: " + mCurrentUsername + "mToken.get(): " + mToken.get(), Toast.LENGTH_LONG).show();
-        if(mToken.get() != null && mCurrentUsername.equals(snippet.getOwner())) {
-            btModify.setEnabled(true);
-            btDelete.setEnabled(true);
-        } else {
+        if(mToken.get() == null || !MainActivity.getCurrentUsername().equals(snippet.getOwner())) {
             btModify.setEnabled(false);
             btDelete.setEnabled(false);
         }
@@ -90,9 +95,10 @@ public class SnippetDetailActivity extends BaseActivity {
         mToken.setOnStringChangeListener(new ObservableToken.OnStringChangeListener() {
             @Override
             public void onStringChanged(String newValue) {
-                Log.i(TAG, SnippetDetailActivity.class.getSimpleName() + ": onStringChanged() called");
-                Log.i(TAG, "mToken.get(): " + mToken.get() + ", mCurrentUsername: " + mCurrentUsername + ", owner: " + snippet.getOwner());
-                if(mToken.get() != null && mCurrentUsername.equals(snippet.getOwner())) {
+                Log.i(TAG, "SnippetDetailActivity: onStringChanged() called");
+                Log.i(TAG, "SnippetDetailActivity: mToken.get(): " + mToken.get() + ", mCurrentUsername: " + MainActivity.getCurrentUsername() + ", owner: " + snippet.getOwner());
+                invalidateOptionsMenu();
+                if(mToken.get() != null && MainActivity.getCurrentUsername().equals(snippet.getOwner())) {
                     btModify.setEnabled(true);
                     btDelete.setEnabled(true);
                 } else {
@@ -121,6 +127,32 @@ public class SnippetDetailActivity extends BaseActivity {
                 doDeleteSnippet(snippet.getId(), position);
             }
         });
+
+//        Log.i(TAG, "SnippetDetailActivity: mToken: " + mToken);
+    }
+
+    public static ObservableToken getToken() {
+        return mToken;
+    }
+
+    public static void setToken(ObservableToken token) {
+        SnippetDetailActivity.mToken = token;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+//        return super.onPrepareOptionsMenu(menu);
+        Log.i(TAG, this.getClass().getSimpleName() + ": onPrepareOptionsMenu() called");
+        if(mToken.get() == null) {
+            menu.findItem(R.id.menuLogin).setVisible(true);
+            menu.findItem(R.id.menuLogout).setVisible(false);
+        } else {
+            Log.i(TAG, this.getClass().getSimpleName() + ": onPrepareOptionsMenu(): mToken not null");
+            menu.findItem(R.id.menuLogin).setVisible(false);
+            menu.findItem(R.id.menuLogout).setVisible(true);
+        }
+
+        return true;
     }
 
     public void showDetailSnippet(Snippet snippet) {
@@ -146,8 +178,9 @@ public class SnippetDetailActivity extends BaseActivity {
                 if(response.isSuccessful()) {
                     Snippet snippet = response.body();
                     showDetailSnippet(snippet);
-                    mAdapter.getSnippetList().set(position, snippet);
-                    mAdapter.notifyItemChanged(position);
+                    SnippetAdapter adapter = MainActivity.getAdapter();
+                    adapter.getSnippetList().set(position, snippet);
+                    adapter.notifyItemChanged(position);
                     Toast.makeText(getApplicationContext(), "Detail successful", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -205,7 +238,12 @@ public class SnippetDetailActivity extends BaseActivity {
         });
     }
 
-    public void doHighlightSnippet() {
-
+    @Override
+    public void doLogout() {
+        Log.i(TAG, "SnippetDetailActivity: doLogout()");
+        MainActivity.setCurrentUsername(null);
+        mToken.set(null);
+        MainActivity.getToken().set(null);
+        SnippetCreateActivity.getToken().set(null);
     }
 }

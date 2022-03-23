@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +52,12 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        return super.onCreateOptionsMenu(menu);
+        return true;
+    }
+
     public void doLogin(LoginReq loginReq) {
         DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
 
@@ -61,11 +68,10 @@ public class LoginActivity extends BaseActivity {
                 if(response.isSuccessful()) {
                     LoginResp loginResp = response.body();
                     Log.i(TAG,loginResp.getMessage() + ": " + loginResp.getUsername() + "'s Token " + loginResp.getToken());
-//                    MainActivity.setToken(loginResp.getToken());
-//                    MainActivity.getToken().set(loginResp.getToken());
-//                    MainActivity.setCurrentUsername(loginResp.getUsername());
-                    setCurrentUsername(loginResp.getUsername());
-                    mToken.set(loginResp.getToken());  // Order is important
+                    MainActivity.setCurrentUsername(loginResp.getUsername());
+                    MainActivity.getToken().set(loginResp.getToken());  // Order is important
+                    SnippetCreateActivity.getToken().set(loginResp.getToken());
+                    SnippetDetailActivity.getToken().set(loginResp.getToken());
                     finish();
                 }
             }

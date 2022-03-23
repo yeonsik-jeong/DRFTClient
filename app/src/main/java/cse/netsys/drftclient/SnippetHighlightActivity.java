@@ -3,6 +3,7 @@ package cse.netsys.drftclient;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -26,5 +27,11 @@ public class SnippetHighlightActivity extends BaseActivity {
                 finish();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 }

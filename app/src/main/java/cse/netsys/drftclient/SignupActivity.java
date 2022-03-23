@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,16 +43,12 @@ public class SignupActivity extends BaseActivity {
                 doSignup(signupReq);
             }
         });
+    }
 
-        TextView tvLogin = findViewById(R.id.tvLogin);
-        tvLogin.setMovementMethod(LinkMovementMethod.getInstance());
-        tvLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sIntent = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(sIntent);
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+//        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     public void doSignup(SignupReq signupReq) {
