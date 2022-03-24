@@ -4,10 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,8 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import java.util.List;
 
 import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.ObservableToken;
@@ -26,8 +23,6 @@ import cse.netsys.drftclient.util.SnippetAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Body;
-import retrofit2.http.Path;
 
 public class SnippetDetailActivity extends BaseActivity {
 //    private String mToken = null;
@@ -55,7 +50,7 @@ public class SnippetDetailActivity extends BaseActivity {
 
 //        Snippet snippet = getIntent().getParcelableExtra("Snippet");
         int position = getIntent().getIntExtra("position", 0);
-        Snippet snippet = mAdapter.getSnippetList().get(position);
+        Snippet snippet = mAdapter.getCurrentList().get(position);
         doDetailSnippet(snippet.getId(), position);  // Unchangeable element
 
         mTvURL = findViewById(R.id.tvURL);
@@ -81,14 +76,14 @@ public class SnippetDetailActivity extends BaseActivity {
             }
         });
 
-        Button btModify = findViewById(R.id.btModify);
+        Button btUpdate = findViewById(R.id.btUpdate);
         Button btDelete = findViewById(R.id.btDelete);
 
 //        mToken = MainActivity.getToken();
 //        mCurrentUsername = MainActivity.getCurrentUsername();
 //        Toast.makeText(getApplicationContext(), "mCurrentUsername: " + mCurrentUsername + "mToken.get(): " + mToken.get(), Toast.LENGTH_LONG).show();
         if(mToken.get() == null || !MainActivity.getCurrentUsername().equals(snippet.getOwner())) {
-            btModify.setEnabled(false);
+            btUpdate.setEnabled(false);
             btDelete.setEnabled(false);
         }
 
@@ -99,16 +94,16 @@ public class SnippetDetailActivity extends BaseActivity {
                 Log.i(TAG, "SnippetDetailActivity: mToken.get(): " + mToken.get() + ", mCurrentUsername: " + MainActivity.getCurrentUsername() + ", owner: " + snippet.getOwner());
                 invalidateOptionsMenu();
                 if(mToken.get() != null && MainActivity.getCurrentUsername().equals(snippet.getOwner())) {
-                    btModify.setEnabled(true);
+                    btUpdate.setEnabled(true);
                     btDelete.setEnabled(true);
                 } else {
-                    btModify.setEnabled(false);
+                    btUpdate.setEnabled(false);
                     btDelete.setEnabled(false);
                 }
             }
         });
 
-        btModify.setOnClickListener(new View.OnClickListener() {
+        btUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Snippet modifiedSnippet = new Snippet(
@@ -178,9 +173,11 @@ public class SnippetDetailActivity extends BaseActivity {
                 if(response.isSuccessful()) {
                     Snippet snippet = response.body();
                     showDetailSnippet(snippet);
-                    SnippetAdapter adapter = MainActivity.getAdapter();
-                    adapter.getSnippetList().set(position, snippet);
-                    adapter.notifyItemChanged(position);
+                    mAdapter.updateItem(position, snippet);
+//                    List<Snippet> snippetList = mAdapter.getSnippetList();
+//                    snippetList.set(position, snippet);
+//                    mAdapter.setSnippetList(snippetList);
+//                    mAdapter.notifyItemChanged(position);
                     Toast.makeText(getApplicationContext(), "Detail successful", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -202,8 +199,12 @@ public class SnippetDetailActivity extends BaseActivity {
                 if(response.isSuccessful()) {
                     Snippet snippet = response.body();
 //                    showDetailSnippet(snippet);
-                    mAdapter.getSnippetList().set(position, snippet);
-                    mAdapter.notifyItemChanged(position);
+                    mAdapter.updateItem(position, snippet);
+//                    List<Snippet> snippetList = mAdapter.getSnippetList();
+//                   snippetList.set(position, snippet);
+///                    mAdapter.setSnippetList(snippetList);
+//                    mAdapter.getSnippetList().set(position, snippet);
+//                    mAdapter.notifyItemChanged(position);
                     Toast.makeText(getApplicationContext(), "Modify successful", Toast.LENGTH_SHORT).show();
                     finish();
                 }
@@ -224,8 +225,11 @@ public class SnippetDetailActivity extends BaseActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()) {
-                    mAdapter.getSnippetList().remove(position);
-                    mAdapter.notifyItemRemoved(position);
+                    mAdapter.removeItem(position);
+//                    List<Snippet> snippetList = mAdapter.getSnippetList();
+//                    snippetList.remove(position);
+//                    mAdapter.setSnippetList(snippetList);
+//                    mAdapter.notifyItemRemoved(position);
                     Toast.makeText(getApplicationContext(), "Delete successful", Toast.LENGTH_SHORT).show();
                     finish();
                 }

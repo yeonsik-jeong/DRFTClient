@@ -1,18 +1,16 @@
 package cse.netsys.drftclient;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.List;
 
 import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.ObservableToken;
@@ -115,8 +113,12 @@ public class SnippetCreateActivity extends BaseActivity {
             @Override
             public void onResponse(Call<Snippet> call, Response<Snippet> response) {
                 Snippet snippet = response.body();
-                mAdapter.getSnippetList().add(0, snippet);
-                mAdapter.notifyItemInserted(0);
+                mAdapter.addItem(0, snippet);
+//                List<Snippet> snippetList = mAdapter.getSnippetList();
+//                snippetList.add(0, snippet);
+//               mAdapter.setSnippetList(snippetList);
+//                mAdapter.getSnippetList().add(0, snippet);
+//                mAdapter.notifyItemInserted(0);
                 Toast.makeText(getApplicationContext(), "Create successful", Toast.LENGTH_SHORT).show();
                 finish();
             }

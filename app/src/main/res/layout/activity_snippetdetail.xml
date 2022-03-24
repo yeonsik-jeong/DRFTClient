@@ -145,12 +145,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <Button
-                android:id="@+id/btModify"
+                android:id="@+id/btUpdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="1"
                 android:layout_span="2"
-                android:text="Modify"
+                android:text="Update"
                 android:textAllCaps="false" />
             <Button
                 android:id="@+id/btDelete"

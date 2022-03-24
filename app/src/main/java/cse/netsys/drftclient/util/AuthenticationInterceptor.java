@@ -9,10 +9,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class AuthenticationInterceptor implements Interceptor {
-    private String authToken;
+    private String mAuthToken;
 
     public AuthenticationInterceptor(String authToken) {
-        this.authToken = authToken;
+        this.mAuthToken = authToken;
     }
 
     @NonNull
@@ -20,7 +20,7 @@ public class AuthenticationInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request originalRequest = chain.request();
         Request newRequest = originalRequest.newBuilder()
-                                .header("Authorization", authToken)
+                                .header("Authorization", mAuthToken)
                                 .build();
         return chain.proceed(newRequest);
     }

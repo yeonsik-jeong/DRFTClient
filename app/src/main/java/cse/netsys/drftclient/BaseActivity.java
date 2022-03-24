@@ -1,22 +1,16 @@
 package cse.netsys.drftclient;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-
-import cse.netsys.drftclient.model.ObservableToken;
-import cse.netsys.drftclient.util.SnippetAdapter;
 
 public class BaseActivity extends AppCompatActivity {
-    static final String TAG = "DRFTClient";
+    public static final String TAG = "DRFTClient";
     static final String API_BASE_URL = "http://10.0.2.2:8000/";  // Not 127.0.0.1
 
     @Override

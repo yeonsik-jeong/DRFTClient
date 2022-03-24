@@ -1,24 +1,15 @@
 package cse.netsys.drftclient;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,7 +21,6 @@ import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.model.Snippet;
 import cse.netsys.drftclient.model.Snippets;
-import cse.netsys.drftclient.util.APIClient;
 import cse.netsys.drftclient.util.APIServiceGenerator;
 import cse.netsys.drftclient.util.SnippetAdapter;
 import retrofit2.Call;
@@ -51,14 +41,15 @@ public class MainActivity extends BaseActivity {
 //        mApiService = APIClient.getAPIClient(BASE_URL);  // Older version
         doListSnippets();
 
-        List<Snippet> snippetList = new ArrayList<>();
-        RecyclerView rvSnippets = findViewById(R.id.rvSnippets);
+//        List<Snippet> snippetList = new ArrayList<>();
 
+        RecyclerView rvSnippets = findViewById(R.id.rvSnippets);
         rvSnippets.setLayoutManager(new LinearLayoutManager(this));
+//        rvSnippets.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         rvSnippets.addItemDecoration(itemDecoration);
 
-        mAdapter = new SnippetAdapter(snippetList);
+        mAdapter = new SnippetAdapter();
         rvSnippets.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener(new SnippetAdapter.OnItemClickListener() {
@@ -139,8 +130,9 @@ public class MainActivity extends BaseActivity {
                     for(int i=0; i<snippetList.size(); i++) {
                         Log.i(TAG,"[ID: " + snippetList.get(i).getId() + "] " + snippetList.get(i).getTitle());
                     }
-                    mAdapter.setSnippetList(snippetList);
-                    mAdapter.notifyDataSetChanged();
+                    mAdapter.submitList(snippetList);
+//                    mAdapter.setSnippetList(snippetList);
+//                    mAdapter.notifyDataSetChanged();
                 }
             }
 
