@@ -11,7 +11,7 @@ import android.view.MenuItem;
 
 public class BaseActivity extends AppCompatActivity {
     public static final String TAG = "DRFTClient";
-    static final String API_BASE_URL = "http://10.0.2.2:8000/";  // Not 127.0.0.1
+    public static final String API_BASE_URL = "http://10.0.2.2:8000/";  // Not 127.0.0.1
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

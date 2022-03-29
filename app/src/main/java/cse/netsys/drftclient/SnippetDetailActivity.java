@@ -13,12 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.List;
-
 import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.model.Snippet;
-import cse.netsys.drftclient.util.APIServiceGenerator;
+import cse.netsys.drftclient.api.APIServiceGenerator;
 import cse.netsys.drftclient.util.SnippetAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -50,7 +48,7 @@ public class SnippetDetailActivity extends BaseActivity {
 
 //        Snippet snippet = getIntent().getParcelableExtra("Snippet");
         int position = getIntent().getIntExtra("position", 0);
-        Snippet snippet = mAdapter.getCurrentList().get(position);
+        Snippet snippet = mAdapter.getSnippet(position);
         doDetailSnippet(snippet.getId(), position);  // Unchangeable element
 
         mTvURL = findViewById(R.id.tvURL);
@@ -173,6 +171,7 @@ public class SnippetDetailActivity extends BaseActivity {
                 if(response.isSuccessful()) {
                     Snippet snippet = response.body();
                     showDetailSnippet(snippet);
+//                    mAdapter.snapshot().set(position, snippet);
                     mAdapter.updateItem(position, snippet);
 //                    List<Snippet> snippetList = mAdapter.getSnippetList();
 //                    snippetList.set(position, snippet);
@@ -199,6 +198,7 @@ public class SnippetDetailActivity extends BaseActivity {
                 if(response.isSuccessful()) {
                     Snippet snippet = response.body();
 //                    showDetailSnippet(snippet);
+//                    mAdapter.snapshot().set(position, snippet);
                     mAdapter.updateItem(position, snippet);
 //                    List<Snippet> snippetList = mAdapter.getSnippetList();
 //                   snippetList.set(position, snippet);

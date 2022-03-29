@@ -7,9 +7,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -21,11 +24,11 @@ import cse.netsys.drftclient.MainActivity;
 import cse.netsys.drftclient.R;
 import cse.netsys.drftclient.model.Snippet;
 
-public class SnippetAdapter extends ListAdapter<Snippet, SnippetAdapter.ViewHolder> {
+public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.ViewHolder> {
     private OnItemClickListener mListener;
 
-    public SnippetAdapter() {
-        super(DIFF_CALLBACK);
+    public SnippetAdapter(@NotNull DiffUtil.ItemCallback<Snippet> diffCallback) {
+        super(diffCallback);
     }
 
     public interface OnItemClickListener {
@@ -85,25 +88,37 @@ public class SnippetAdapter extends ListAdapter<Snippet, SnippetAdapter.ViewHold
         }
     }
 
+    public Snippet getSnippet(int position) {
+        return getItem(position);
+    }
+
     public void addItem(int position, Snippet snippet) {
+        snapshot().getItems().add(position, snippet);
+        refresh();
+/*
         List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
         snippetList.add(position, snippet);
         submitList(snippetList);
+*/
     }
 
     public void updateItem(int position, Snippet snippet) {
+        snapshot().getItems().set(position, snippet);
+/*
         List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
         snippetList.set(position, snippet);
         submitList(snippetList);
+*/
     }
 
     public void removeItem(int position) {
-        List<Snippet> snippetList = new ArrayList<Snippet>();
+        snapshot().getItems().remove(position);
+/*        List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
         snippetList.remove(position);
-        submitList(snippetList);
+        submitList(snippetList);*/
     }
 
 /*    public void addMoreSnippets(List<Snippet> newSnippetList) {
@@ -111,7 +126,7 @@ public class SnippetAdapter extends ListAdapter<Snippet, SnippetAdapter.ViewHold
         submitList(mSnippets);  // DiffUtil takes care of the check
     }*/
 
-    public static final DiffUtil.ItemCallback<Snippet> DIFF_CALLBACK = new DiffUtil.ItemCallback<Snippet>() {
+/*    public static final DiffUtil.ItemCallback<Snippet> DIFF_CALLBACK = new DiffUtil.ItemCallback<Snippet>() {
         @Override
         public boolean areItemsTheSame(@NonNull Snippet oldItem, @NonNull Snippet newItem) {
 //            Log.i(BaseActivity.TAG, "areItemsTheSame() called");
@@ -130,5 +145,5 @@ public class SnippetAdapter extends ListAdapter<Snippet, SnippetAdapter.ViewHold
                     && oldItem.getLanguage().equals(newItem.getLanguage())
                     && oldItem.getStyle().equals(newItem.getStyle()));
         }
-    };
+    };*/
 }

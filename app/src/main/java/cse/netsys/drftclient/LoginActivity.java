@@ -1,7 +1,5 @@
 package cse.netsys.drftclient;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
@@ -16,9 +14,7 @@ import android.widget.Toast;
 import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.LoginReq;
 import cse.netsys.drftclient.model.LoginResp;
-import cse.netsys.drftclient.model.SignupReq;
-import cse.netsys.drftclient.model.SignupResp;
-import cse.netsys.drftclient.util.APIServiceGenerator;
+import cse.netsys.drftclient.api.APIServiceGenerator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

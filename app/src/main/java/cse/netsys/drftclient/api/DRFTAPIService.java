@@ -5,7 +5,8 @@ import cse.netsys.drftclient.model.LoginResp;
 import cse.netsys.drftclient.model.SignupReq;
 import cse.netsys.drftclient.model.SignupResp;
 import cse.netsys.drftclient.model.Snippet;
-import cse.netsys.drftclient.model.Snippets;
+import cse.netsys.drftclient.model.SnippetResp;
+import io.reactivex.rxjava3.core.Single;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -13,10 +14,14 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface DRFTAPIService {
     @GET("/snippets")
-    Call<Snippets> listSnippets();
+    Call<SnippetResp> listSnippets();
+
+    @GET("/snippets")
+    Single<SnippetResp> listPagedSnippets(@Query("page") int page);
 
     @POST("/snippets/")  // The trailing slash necessary in POST
     Call<Snippet> createSnippet(@Body Snippet snippet);

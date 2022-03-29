@@ -1,4 +1,4 @@
-package cse.netsys.drftclient.util;
+package cse.netsys.drftclient.api;
 
 import androidx.annotation.NonNull;
 

@@ -1,6 +1,6 @@
 package cse.netsys.drftclient;
 
-import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -10,22 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.ObservableToken;
-import cse.netsys.drftclient.model.Snippet;
-import cse.netsys.drftclient.model.Snippets;
-import cse.netsys.drftclient.util.APIServiceGenerator;
 import cse.netsys.drftclient.util.SnippetAdapter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import cse.netsys.drftclient.util.SnippetComparator;
+import cse.netsys.drftclient.paging.SnippetViewModel;
 
 public class MainActivity extends BaseActivity {
 //    private static String mToken = null;
@@ -39,7 +30,7 @@ public class MainActivity extends BaseActivity {
         setContentView(R.layout.activity_main);
 
 //        mApiService = APIClient.getAPIClient(BASE_URL);  // Older version
-        doListSnippets();
+//        doListSnippets();
 
 //        List<Snippet> snippetList = new ArrayList<>();
 
@@ -49,7 +40,7 @@ public class MainActivity extends BaseActivity {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         rvSnippets.addItemDecoration(itemDecoration);
 
-        mAdapter = new SnippetAdapter();
+        mAdapter = new SnippetAdapter(new SnippetComparator());
         rvSnippets.setAdapter(mAdapter);
 
         mAdapter.setOnItemClickListener(new SnippetAdapter.OnItemClickListener() {
@@ -82,6 +73,7 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        doListSnippets();
 //        Log.i(TAG, "MainActivity: mToken: " + mToken);
     }
 
@@ -118,29 +110,36 @@ public class MainActivity extends BaseActivity {
     }
 
     public void doListSnippets() {
-        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
+        SnippetViewModel snippetViewModel = new ViewModelProvider(this).get(SnippetViewModel.class);
+        snippetViewModel.getPagingDataFlowable()
+//            .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+            .subscribe(snippetPagingData -> mAdapter.submitData(getLifecycle(), snippetPagingData), throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
+
+
+/*        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
 
         Call<Snippets> call = apiService.listSnippets();
+//        Call<Snippets> call = apiService.listPagedSnippets(2);
         call.enqueue(new Callback<Snippets>() {
             @Override
-            public void onResponse(Call<Snippets> call, Response<Snippets> response) {
+            public void onResponse(Call<Snippets> call, Response<SnippetResp> response) {
                 if(response.isSuccessful()) {
-                    Snippets snippets = response.body();
-                    List<Snippet> snippetList = snippets.getResults();
+                    SnippetResp snippetResp = response.body();
+                    List<Snippet> snippetList = snippetResp.getResults();
                     for(int i=0; i<snippetList.size(); i++) {
                         Log.i(TAG,"[ID: " + snippetList.get(i).getId() + "] " + snippetList.get(i).getTitle());
                     }
-                    mAdapter.submitList(snippetList);
+//                    mAdapter.submitList(snippetList);
 //                    mAdapter.setSnippetList(snippetList);
 //                    mAdapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onFailure(Call<Snippets> call, Throwable t) {
+            public void onFailure(Call<SnippetResp> call, Throwable t) {
                 Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
             }
-        });
+        });*/
     }
 
     @Override

@@ -10,12 +10,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.List;
-
 import cse.netsys.drftclient.api.DRFTAPIService;
 import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.model.Snippet;
-import cse.netsys.drftclient.util.APIServiceGenerator;
+import cse.netsys.drftclient.api.APIServiceGenerator;
 import cse.netsys.drftclient.util.SnippetAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
