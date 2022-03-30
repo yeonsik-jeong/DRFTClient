@@ -1,6 +1,5 @@
 package cse.netsys.drftclient.util;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,18 +8,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.DiffUtil;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import cse.netsys.drftclient.BaseActivity;
-import cse.netsys.drftclient.MainActivity;
 import cse.netsys.drftclient.R;
 import cse.netsys.drftclient.model.Snippet;
 
@@ -43,7 +34,7 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
     @Override
     public SnippetAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new ViewHolder(inflater.inflate(R.layout.recyclerview_snippets, parent, false));
+        return new ViewHolder(inflater.inflate(R.layout.recyclerview_snippet, parent, false));
     }
 
     @Override
@@ -105,6 +96,7 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
 
     public void updateItem(int position, Snippet snippet) {
         snapshot().getItems().set(position, snippet);
+        refresh();
 /*
         List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
@@ -115,6 +107,7 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
 
     public void removeItem(int position) {
         snapshot().getItems().remove(position);
+        refresh();
 /*        List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
         snippetList.remove(position);

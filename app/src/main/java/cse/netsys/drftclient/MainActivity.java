@@ -17,6 +17,7 @@ import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.util.SnippetAdapter;
 import cse.netsys.drftclient.util.SnippetComparator;
 import cse.netsys.drftclient.paging.SnippetViewModel;
+import cse.netsys.drftclient.util.SnippetLoadStateAdapter;
 
 public class MainActivity extends BaseActivity {
 //    private static String mToken = null;
@@ -41,7 +42,8 @@ public class MainActivity extends BaseActivity {
         rvSnippets.addItemDecoration(itemDecoration);
 
         mAdapter = new SnippetAdapter(new SnippetComparator());
-        rvSnippets.setAdapter(mAdapter);
+        rvSnippets.setAdapter(mAdapter.withLoadStateFooter(
+                new SnippetLoadStateAdapter(v -> mAdapter.retry())));
 
         mAdapter.setOnItemClickListener(new SnippetAdapter.OnItemClickListener() {
             @Override
