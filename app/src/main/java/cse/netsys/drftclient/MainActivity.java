@@ -1,9 +1,12 @@
 package cse.netsys.drftclient;
 
+import static autodispose2.AutoDispose.autoDisposable;
+
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
 import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.util.SnippetAdapter;
 import cse.netsys.drftclient.util.SnippetComparator;
@@ -75,6 +79,15 @@ public class MainActivity extends BaseActivity {
             }
         });
 
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mAdapter.refresh();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
+
         doListSnippets();
 //        Log.i(TAG, "MainActivity: mToken: " + mToken);
     }
@@ -114,7 +127,7 @@ public class MainActivity extends BaseActivity {
     public void doListSnippets() {
         SnippetViewModel snippetViewModel = new ViewModelProvider(this).get(SnippetViewModel.class);
         snippetViewModel.getPagingDataFlowable()
-//            .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))
+            .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))  // Necessary for refresh()
             .subscribe(snippetPagingData -> mAdapter.submitData(getLifecycle(), snippetPagingData), throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
 
 

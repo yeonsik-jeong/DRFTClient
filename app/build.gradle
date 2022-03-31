@@ -45,4 +45,10 @@ dependencies {
     implementation 'androidx.paging:paging-runtime:3.1.1'
     implementation 'androidx.paging:paging-rxjava3:3.1.1'
     implementation 'com.squareup.retrofit2:adapter-rxjava3:2.9.0'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    def autodispose_version = "2.1.1"
+    implementation "com.uber.autodispose2:autodispose:$autodispose_version"
+    implementation "com.uber.autodispose2:autodispose-lifecycle:$autodispose_version"
+    implementation "com.uber.autodispose2:autodispose-android:$autodispose_version"
+    implementation "com.uber.autodispose2:autodispose-androidx-lifecycle:$autodispose_version"
 }

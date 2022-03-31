@@ -34,16 +34,16 @@ public class SnippetLoadStateAdapter extends LoadStateAdapter<SnippetLoadStateAd
     }
 
     public class LoadStateViewHolder extends RecyclerView.ViewHolder {
-        private ProgressBar pbLoading;
         private TextView tvErrorMsg;
+        private ProgressBar pbLoading;
         private Button btRetry;
 
         public LoadStateViewHolder(@NonNull ViewGroup viewGroup, @NonNull View.OnClickListener retryCallback) {
             super(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.loading_states, viewGroup, false));
 
             LoadingStatesBinding binding = LoadingStatesBinding.bind(itemView);
-            pbLoading = binding.pbLoading;
             tvErrorMsg = binding.tvErrorMsg;
+            pbLoading = binding.pbLoading;
             btRetry = binding.btRetry;
             btRetry.setOnClickListener(retryCallback);
         }
@@ -53,8 +53,8 @@ public class SnippetLoadStateAdapter extends LoadStateAdapter<SnippetLoadStateAd
                 LoadState.Error loadStateError = (LoadState.Error)loadState;
                 tvErrorMsg.setText(loadStateError.getError().getLocalizedMessage());
             }
-            pbLoading.setVisibility((loadState instanceof LoadState.Loading)? View.VISIBLE: View.GONE);
             tvErrorMsg.setVisibility((loadState instanceof LoadState.Error)? View.VISIBLE: View.GONE);
+            pbLoading.setVisibility((loadState instanceof LoadState.Loading)? View.VISIBLE: View.GONE);
             btRetry.setVisibility((loadState instanceof LoadState.Error)? View.VISIBLE: View.GONE);
         }
     }

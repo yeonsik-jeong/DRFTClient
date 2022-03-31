@@ -5,10 +5,12 @@
       <map>
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/activity_login.xml" value="0.25364583333333335" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/activity_main.xml" value="0.36614583333333334" />
+        <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/activity_main_swipe.xml" value="0.245018115942029" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/activity_signup.xml" value="0.25364583333333335" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/activity_snippetcreate.xml" value="0.20833333333333334" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/activity_snippetdetail.xml" value="0.20833333333333334" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/activity_snippethighlight.xml" value="0.23802083333333332" />
+        <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/loading_states.xml" value="0.245018115942029" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/loadstate.xml" value="0.245018115942029" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/menu_activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Practice/Python/DjangoRESTFramework/Project/DRFTClient/app/src/main/res/layout/recyclerview_snippet.xml" value="0.5" />

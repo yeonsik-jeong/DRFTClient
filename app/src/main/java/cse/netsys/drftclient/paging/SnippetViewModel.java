@@ -27,11 +27,11 @@ public class SnippetViewModel extends ViewModel {
 
     private void init() {
         PagingConfig pagingConfig = new PagingConfig(
-                                        PAGE_SIZE,  // pageSize
-                                        (int)Math.round(PAGE_SIZE*0.1),  // prefetchDistance
-                        true,  // enablePlaceholders
-                                        PAGE_SIZE,  // initialLoadSize
-                                PAGE_SIZE*100);  // maxSize
+                                        PAGE_SIZE);  // pageSize
+//                                        (int)Math.round(PAGE_SIZE*0.2),  // prefetchDistance
+//                                        true  // enablePlaceholders
+//                                        PAGE_SIZE  // initialLoadSize
+//                                        MAX_SIZE_UNBOUNDED);  // maxSize unbounded by default
 
         Pager<Integer, Snippet> pager = new Pager<>(pagingConfig, () -> new SnippetPagingSource());
 

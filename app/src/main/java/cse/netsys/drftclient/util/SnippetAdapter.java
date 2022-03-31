@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.paging.PagingDataAdapter;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,10 +17,17 @@ import cse.netsys.drftclient.R;
 import cse.netsys.drftclient.model.Snippet;
 
 public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.ViewHolder> {
+    private RecyclerView mRecyclerView;
     private OnItemClickListener mListener;
 
     public SnippetAdapter(@NotNull DiffUtil.ItemCallback<Snippet> diffCallback) {
         super(diffCallback);
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
     }
 
     public interface OnItemClickListener {
@@ -83,9 +91,10 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
         return getItem(position);
     }
 
-    public void addItem(int position, Snippet snippet) {
+    public void addItem(int position, Snippet snippet) {  // ToDO: CRUD
         snapshot().getItems().add(position, snippet);
         refresh();
+//        ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position+10, 0); // Works well
 /*
         List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
@@ -94,7 +103,7 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
 */
     }
 
-    public void updateItem(int position, Snippet snippet) {
+    public void updateItem(int position, Snippet snippet) { // ToDO: CRUD
         snapshot().getItems().set(position, snippet);
         refresh();
 /*
@@ -105,7 +114,7 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
 */
     }
 
-    public void removeItem(int position) {
+    public void removeItem(int position) { // ToDO: CRUD
         snapshot().getItems().remove(position);
         refresh();
 /*        List<Snippet> snippetList = new ArrayList<Snippet>();

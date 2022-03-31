@@ -8,6 +8,7 @@ import androidx.paging.PagingState;
 import androidx.paging.rxjava3.RxPagingSource;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import cse.netsys.drftclient.BaseActivity;
 import cse.netsys.drftclient.api.DRFTAPIService;
@@ -48,12 +49,16 @@ public class SnippetPagingSource extends RxPagingSource<Integer, Snippet> {
     @Override
     public Single<LoadResult<Integer, Snippet>> loadSingle(@NonNull LoadParams<Integer> loadParams) {
         try {
-            int page = (loadParams.getKey() != null)? loadParams.getKey(): 1;
+            Integer nextPageNumber = loadParams.getKey();
+            if(nextPageNumber == null) {
+                nextPageNumber = 1;
+            }
 
-            return APIServiceGenerator.createService(DRFTAPIService.class, BaseActivity.API_BASE_URL).listPagedSnippets(page)
+            return APIServiceGenerator.createService(DRFTAPIService.class, BaseActivity.API_BASE_URL).listPagedSnippets(nextPageNumber)
                     .subscribeOn(Schedulers.io())
-//                    .map(this::toLoadResult)  // Working well
+//                    .map(this::toLoadResult)  // Works well
                     .map(snippetResp -> toLoadResult(snippetResp))
+                    .delay(3000, TimeUnit.MILLISECONDS)  // Delays the emission of the success signal
 //                    .map(SnippetResp::getResults)
 //                    .map(snippetList -> toLoadResult(snippetList, page))
                     .onErrorReturn(LoadResult.Error::new);
@@ -63,6 +68,7 @@ public class SnippetPagingSource extends RxPagingSource<Integer, Snippet> {
     }
 
     private LoadResult<Integer, Snippet> toLoadResult(@NonNull SnippetResp response) {
+        Log.i(BaseActivity.TAG, "toLoadResult(): response.getNextPageNumber(): " + ((response.getNextPageNumber()==null)?null: Integer.toString(response.getNextPageNumber())));
         return new LoadResult.Page<>(response.getResults(), null, response.getNextPageNumber(),
                 LoadResult.Page.COUNT_UNDEFINED, LoadResult.Page.COUNT_UNDEFINED);
     }

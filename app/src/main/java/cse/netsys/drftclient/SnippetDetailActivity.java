@@ -172,7 +172,7 @@ public class SnippetDetailActivity extends BaseActivity {
                     Snippet snippet = response.body();
                     showDetailSnippet(snippet);
 //                    mAdapter.snapshot().set(position, snippet);
-                    mAdapter.updateItem(position, snippet);
+//                    mAdapter.updateItem(position, snippet);  // Comments to reduce the amount of network req/resp traffic
 //                    List<Snippet> snippetList = mAdapter.getSnippetList();
 //                    snippetList.set(position, snippet);
 //                    mAdapter.setSnippetList(snippetList);
