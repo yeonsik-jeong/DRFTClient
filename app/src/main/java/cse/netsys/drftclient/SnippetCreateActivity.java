@@ -111,7 +111,7 @@ public class SnippetCreateActivity extends BaseActivity {
             @Override
             public void onResponse(Call<Snippet> call, Response<Snippet> response) {
                 Snippet snippet = response.body();
-                mAdapter.addItem(0, snippet);
+                mAdapter.addItem(snippet, 0);
 //                List<Snippet> snippetList = mAdapter.getSnippetList();
 //                snippetList.add(0, snippet);
 //               mAdapter.setSnippetList(snippetList);

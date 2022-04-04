@@ -1,5 +1,6 @@
 package cse.netsys.drftclient.util;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
+import cse.netsys.drftclient.BaseActivity;
 import cse.netsys.drftclient.R;
+import cse.netsys.drftclient.db.RemoteKey;
+import cse.netsys.drftclient.db.SnippetDatabase;
 import cse.netsys.drftclient.model.Snippet;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.ViewHolder> {
+    private SnippetDatabase mDatabase;
     private RecyclerView mRecyclerView;
     private OnItemClickListener mListener;
 
-    public SnippetAdapter(@NotNull DiffUtil.ItemCallback<Snippet> diffCallback) {
+    public SnippetAdapter(@NotNull DiffUtil.ItemCallback<Snippet> diffCallback, SnippetDatabase database) {
         super(diffCallback);
+        this.mDatabase = database;
     }
 
     @Override
@@ -91,9 +99,20 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
         return getItem(position);
     }
 
-    public void addItem(int position, Snippet snippet) {  // ToDO: CRUD
-        snapshot().getItems().add(position, snippet);
-        refresh();
+    public void addItem(Snippet snippet, int position) {  // ToDO: CRUD
+        mDatabase.remoteKeyDao().insertRemoteKey(new RemoteKey(snippet.getId(), null, 2))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> Log.d(BaseActivity.TAG, "removeItem(): deleteRemoteKey() successful"),
+                        throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
+        mDatabase.snippetDao().insertSnippet(snippet)  // Don't need to give the position
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> { notifyItemInserted(position);
+                                    Log.d(BaseActivity.TAG, "addItem(): insertSnippet() successful"); },
+                            throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
+//        snapshot().getItems().add(position, snippet);
+//        refresh();
 //        ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(position+10, 0); // Works well
 /*
         List<Snippet> snippetList = new ArrayList<Snippet>();
@@ -103,9 +122,16 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
 */
     }
 
-    public void updateItem(int position, Snippet snippet) { // ToDO: CRUD
-        snapshot().getItems().set(position, snippet);
-        refresh();
+    public void updateItem(Snippet snippet, int position) { // ToDO: CRUD
+        mDatabase.snippetDao().updateSnippet(snippet)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> { notifyItemChanged(position);
+                                    Log.d(BaseActivity.TAG, "updateItem(): updateSnippet() successful"); },
+                            throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
+
+//        snapshot().getItems().set(position, snippet);
+//        refresh();
 /*
         List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
@@ -114,9 +140,21 @@ public class SnippetAdapter extends PagingDataAdapter<Snippet, SnippetAdapter.Vi
 */
     }
 
-    public void removeItem(int position) { // ToDO: CRUD
-        snapshot().getItems().remove(position);
-        refresh();
+    public void removeItem(int snippetId, int position) { // ToDO: CRUD
+        mDatabase.remoteKeyDao().deleteRemoteKey(snippetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> Log.d(BaseActivity.TAG, "removeItem(): deleteRemoteKey() successful"),
+                            throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
+        mDatabase.snippetDao().deleteSnippet(snippetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> { notifyItemRemoved(position);
+                                    Log.d(BaseActivity.TAG, "removeItem(): deleteSnippet() successful"); },
+                            throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
+
+//        snapshot().getItems().remove(position);
+//        refresh();
 /*        List<Snippet> snippetList = new ArrayList<Snippet>();
         snippetList.addAll(getCurrentList());
         snippetList.remove(position);

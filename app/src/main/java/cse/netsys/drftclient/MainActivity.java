@@ -17,6 +17,7 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import autodispose2.androidx.lifecycle.AndroidLifecycleScopeProvider;
+import cse.netsys.drftclient.db.SnippetDatabase;
 import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.util.SnippetAdapter;
 import cse.netsys.drftclient.util.SnippetComparator;
@@ -27,6 +28,8 @@ public class MainActivity extends BaseActivity {
 //    private static String mToken = null;
     private static ObservableToken mToken = new ObservableToken();
     private static String mCurrentUsername = null;
+
+    private static SnippetDatabase mDatabase;
     private static SnippetAdapter mAdapter;
 
     @Override
@@ -39,13 +42,15 @@ public class MainActivity extends BaseActivity {
 
 //        List<Snippet> snippetList = new ArrayList<>();
 
+        mDatabase = SnippetDatabase.getInstance(this);
+
         RecyclerView rvSnippets = findViewById(R.id.rvSnippets);
         rvSnippets.setLayoutManager(new LinearLayoutManager(this));
 //        rvSnippets.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         rvSnippets.addItemDecoration(itemDecoration);
 
-        mAdapter = new SnippetAdapter(new SnippetComparator());
+        mAdapter = new SnippetAdapter(new SnippetComparator(), mDatabase);
         rvSnippets.setAdapter(mAdapter.withLoadStateFooter(
                 new SnippetLoadStateAdapter(v -> mAdapter.retry())));
 
@@ -89,7 +94,6 @@ public class MainActivity extends BaseActivity {
         });
 
         doListSnippets();
-//        Log.i(TAG, "MainActivity: mToken: " + mToken);
     }
 
     public static ObservableToken getToken() {
@@ -106,6 +110,10 @@ public class MainActivity extends BaseActivity {
 
     public static SnippetAdapter getAdapter() {
         return mAdapter;
+    }
+
+    public static SnippetDatabase getDatabase() {
+        return mDatabase;
     }
 
     @Override
@@ -126,10 +134,12 @@ public class MainActivity extends BaseActivity {
 
     public void doListSnippets() {
         SnippetViewModel snippetViewModel = new ViewModelProvider(this).get(SnippetViewModel.class);
+        snippetViewModel.setDatabase(mDatabase);
+        snippetViewModel.init();
         snippetViewModel.getPagingDataFlowable()
-            .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))  // Necessary for refresh()
-            .subscribe(snippetPagingData -> mAdapter.submitData(getLifecycle(), snippetPagingData), throwable -> Log.d(BaseActivity.TAG, throwable.getMessage()));
-
+            .to(autoDisposable(AndroidLifecycleScopeProvider.from(this)))  // Necessary for refresh() -> NO
+            .subscribe(snippetPagingData -> mAdapter.submitData(getLifecycle(), snippetPagingData),
+                                            throwable -> Log.e(BaseActivity.TAG, throwable.getMessage()));
 
 /*        DRFTAPIService apiService = APIServiceGenerator.createService(DRFTAPIService.class, API_BASE_URL);
 

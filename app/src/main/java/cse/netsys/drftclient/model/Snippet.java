@@ -3,9 +3,14 @@ package cse.netsys.drftclient.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 @SuppressWarnings("SpellCheckingInspection")  // Typo: in word 'linenos'
-public class Snippet implements Parcelable {
+@Entity(tableName = "snippets")
+public  class Snippet implements Parcelable {
     private String url;
+    @PrimaryKey
     private int id;  // Doesn't need to set value
     private String owner;
     private String highlight;
@@ -30,16 +35,32 @@ public class Snippet implements Parcelable {
         return url;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getOwner() {
         return owner;
     }
 
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
     public String getHighlight() {
         return highlight;
+    }
+
+    public void setHighlight(String highlight) {
+        this.highlight = highlight;
     }
 
     public String getTitle() {

@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import cse.netsys.drftclient.api.DRFTAPIService;
+import cse.netsys.drftclient.db.RemoteKey;
+import cse.netsys.drftclient.db.SnippetDatabase;
 import cse.netsys.drftclient.model.ObservableToken;
 import cse.netsys.drftclient.model.Snippet;
 import cse.netsys.drftclient.api.APIServiceGenerator;
@@ -28,6 +30,7 @@ public class SnippetDetailActivity extends BaseActivity {
 //    private String mCurrentUsername = null;
     private static ObservableToken mToken = new ObservableToken();
     private SnippetAdapter mAdapter;
+    private SnippetDatabase mDatabase;
 
     private TextView mTvURL;
     private TextView mTvID;
@@ -45,11 +48,12 @@ public class SnippetDetailActivity extends BaseActivity {
         setContentView(R.layout.activity_snippetdetail);
 
         mAdapter = MainActivity.getAdapter();
+        mDatabase = MainActivity.getDatabase();
 
 //        Snippet snippet = getIntent().getParcelableExtra("Snippet");
         int position = getIntent().getIntExtra("position", 0);
-        Snippet snippet = mAdapter.getSnippet(position);
-        doDetailSnippet(snippet.getId(), position);  // Unchangeable element
+        Snippet currentSnippet = mAdapter.getSnippet(position);
+        doDetailSnippet(currentSnippet.getId(), position);  // Unchangeable element
 
         mTvURL = findViewById(R.id.tvURL);
         mTvID = findViewById(R.id.tvID);
@@ -69,7 +73,7 @@ public class SnippetDetailActivity extends BaseActivity {
             @Override
             public void onClick(View v) {  // doHighlightSnippet()
                 Intent sIntent = new Intent(SnippetDetailActivity.this, SnippetHighlightActivity.class);
-                sIntent.putExtra("highlightURL", snippet.getHighlight());
+                sIntent.putExtra("highlightURL", currentSnippet.getHighlight());
                 startActivity(sIntent);
             }
         });
@@ -80,7 +84,7 @@ public class SnippetDetailActivity extends BaseActivity {
 //        mToken = MainActivity.getToken();
 //        mCurrentUsername = MainActivity.getCurrentUsername();
 //        Toast.makeText(getApplicationContext(), "mCurrentUsername: " + mCurrentUsername + "mToken.get(): " + mToken.get(), Toast.LENGTH_LONG).show();
-        if(mToken.get() == null || !MainActivity.getCurrentUsername().equals(snippet.getOwner())) {
+        if(mToken.get() == null || !MainActivity.getCurrentUsername().equals(currentSnippet.getOwner())) {
             btUpdate.setEnabled(false);
             btDelete.setEnabled(false);
         }
@@ -89,9 +93,9 @@ public class SnippetDetailActivity extends BaseActivity {
             @Override
             public void onStringChanged(String newValue) {
                 Log.i(TAG, "SnippetDetailActivity: onStringChanged() called");
-                Log.i(TAG, "SnippetDetailActivity: mToken.get(): " + mToken.get() + ", mCurrentUsername: " + MainActivity.getCurrentUsername() + ", owner: " + snippet.getOwner());
+                Log.i(TAG, "SnippetDetailActivity: mToken.get(): " + mToken.get() + ", mCurrentUsername: " + MainActivity.getCurrentUsername() + ", owner: " + currentSnippet.getOwner());
                 invalidateOptionsMenu();
-                if(mToken.get() != null && MainActivity.getCurrentUsername().equals(snippet.getOwner())) {
+                if(mToken.get() != null && MainActivity.getCurrentUsername().equals(currentSnippet.getOwner())) {
                     btUpdate.setEnabled(true);
                     btDelete.setEnabled(true);
                 } else {
@@ -110,14 +114,14 @@ public class SnippetDetailActivity extends BaseActivity {
                                             mCbLinenos.isChecked(),
                                             mEtLanguage.getText().toString(),
                                             mEtStyle.getText().toString());
-                doUpdateSnippet(snippet.getId(), modifiedSnippet, position);
+                doUpdateSnippet(currentSnippet.getId(), modifiedSnippet, position);
             }
         });
 
         btDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doDeleteSnippet(snippet.getId(), position);
+                doDeleteSnippet(currentSnippet.getId(), position);
             }
         });
 
@@ -199,7 +203,7 @@ public class SnippetDetailActivity extends BaseActivity {
                     Snippet snippet = response.body();
 //                    showDetailSnippet(snippet);
 //                    mAdapter.snapshot().set(position, snippet);
-                    mAdapter.updateItem(position, snippet);
+                    mAdapter.updateItem(snippet, position);
 //                    List<Snippet> snippetList = mAdapter.getSnippetList();
 //                   snippetList.set(position, snippet);
 ///                    mAdapter.setSnippetList(snippetList);
@@ -225,7 +229,7 @@ public class SnippetDetailActivity extends BaseActivity {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if(response.isSuccessful()) {
-                    mAdapter.removeItem(position);
+                    mAdapter.removeItem(snippetId, position);
 //                    List<Snippet> snippetList = mAdapter.getSnippetList();
 //                    snippetList.remove(position);
 //                    mAdapter.setSnippetList(snippetList);
